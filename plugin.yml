@@ -1,0 +1,5 @@
+name: NPGuys Relations
+version: "1.0.0"
+author: Goldob
+main: goldob.npguys.relations.NPGuys
+depend: [NPGuys]
