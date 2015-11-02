@@ -18,27 +18,78 @@
 
 package goldob.npguys.relations;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseHookup {
-	private String DB_URL;
+	private NPGuysRelations plugin;
+	
+	private String DB_HOST;
 	private String DB_USER;
 	private String DB_PASS;
 	
-	public DatabaseHookup(NPGuysRelations npGuysRelations) {
-		// TODO Auto-generated constructor stub
+	public DatabaseHookup(NPGuysRelations plugin) {
+		this.plugin = plugin;
+		DB_HOST = plugin.getConfig().getString("host");
+		DB_USER = plugin.getConfig().getString("login");
+		DB_PASS = plugin.getConfig().getString("password");
+		
+		// TODO Initialize
+	}
+	
+	private void initialize() throws SQLException {
+		// TODO
+		String query = "CREATE TABLE Relations ("
+				+ "NPGuy VARCHAR,"
+				+ "Player VARCHAR,"
+				+ "Variable VARCHAR,"
+				+ "Value VARCHAR,"
+				+ "PRIMARY KEY(NPGuy, Player, Variable)"
+				+ ");";
+		getSQLConnection().createStatement().execute(query);
 	}
 	
 	public Object readVariable(Relation relation, String variableName) throws SQLException {
-		// TODO
+		String query = "SELECT Value FROM Relations WHERE NPGuy = ? AND Player = ? AND Variable = ?";
+		
+		PreparedStatement statement = getSQLConnection().prepareStatement(query);
+		statement.setString(1, relation.getNPGuy().getUID());
+		statement.setString(2, relation.getPlayer().getName());
+		statement.setString(3, variableName);
+		
+		ResultSet result = statement.executeQuery();
+		//result.get
 		return null;
 	}
 	
 	public void writeVariable(Relation relation, String variableName, Object value) throws SQLException {
+		String query = "INSERT INTO Relations (NPGuy, Player, Variable, Value) Values (?, ?, ?, ?)";
+		
+		PreparedStatement statement = getSQLConnection().prepareStatement(query);
+		statement.setString(1, relation.getNPGuy().getUID());
+		statement.setString(2, relation.getPlayer().getName());
+		statement.setString(3, variableName);
+		
+		statement.execute();
 		// TODO
 	}
 	
 	public void deleteVariable(Relation relation, String variableName) throws SQLException {
+		String query = "INSERT FROM Relations WHERE NPGuy = ? AND Player = ? AND Variable = ?";
+		
+		PreparedStatement statement = getSQLConnection().prepareStatement(query);
+		statement.setString(1, relation.getNPGuy().getUID());
+		statement.setString(2, relation.getPlayer().getName());
+		statement.setString(3, variableName);
+		
+		statement.execute();
 		// TODO
+	}
+	
+	private Connection getSQLConnection() throws SQLException {
+		return DriverManager.getConnection(DB_HOST, DB_USER, DB_PASS);
 	}
 }
