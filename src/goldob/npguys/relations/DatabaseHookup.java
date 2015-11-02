@@ -46,13 +46,13 @@ public class DatabaseHookup {
 				+ "NPGuy VARCHAR,"
 				+ "Player VARCHAR,"
 				+ "Variable VARCHAR,"
-				+ "Value VARCHAR,"
+				+ "Value DOUBLE PRECISION,"
 				+ "PRIMARY KEY(NPGuy, Player, Variable)"
 				+ ");";
 		getSQLConnection().createStatement().execute(query);
 	}
 	
-	public Object readVariable(Relation relation, String variableName) throws SQLException {
+	public double readVariable(Relation relation, String variableName) throws SQLException {
 		String query = "SELECT Value FROM Relations WHERE NPGuy = ? AND Player = ? AND Variable = ?";
 		
 		PreparedStatement statement = getSQLConnection().prepareStatement(query);
@@ -61,17 +61,18 @@ public class DatabaseHookup {
 		statement.setString(3, variableName);
 		
 		ResultSet result = statement.executeQuery();
-		//result.get
-		return null;
+		// TODO Check if row exists
+		return result.getDouble("Value");
 	}
 	
-	public void writeVariable(Relation relation, String variableName, Object value) throws SQLException {
+	public void writeVariable(Relation relation, String variableName, double value) throws SQLException {
 		String query = "INSERT INTO Relations (NPGuy, Player, Variable, Value) Values (?, ?, ?, ?)";
 		
 		PreparedStatement statement = getSQLConnection().prepareStatement(query);
 		statement.setString(1, relation.getNPGuy().getUID());
 		statement.setString(2, relation.getPlayer().getName());
 		statement.setString(3, variableName);
+		statement.setDouble(4, value);
 		
 		statement.execute();
 		// TODO

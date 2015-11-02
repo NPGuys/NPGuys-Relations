@@ -35,11 +35,11 @@ public class Relation {
 		this.player = player;
 	}
 	
-	public Object readVariable(String name) throws SQLException {
+	public double readVariable(String name) throws SQLException {
 		return plugin.getDatabaseHookup().readVariable(this, name);
 	}
 	
-	public void writeVariable(String name,  Object value) throws SQLException {
+	public void writeVariable(String name,  double value) throws SQLException {
 		plugin.getDatabaseHookup().writeVariable(this, name, value);
 	}
 	
